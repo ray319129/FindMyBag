@@ -1,0 +1,7 @@
+{
+  "name": "Luggage Recovery Buddy",
+  "description": "A quirky, hand-drawn platform to help finders contact luggage owners securely and playfully.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
