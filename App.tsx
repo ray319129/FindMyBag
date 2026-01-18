@@ -1,16 +1,15 @@
 
 import React, { useState, useEffect } from 'react';
 import { Mail, Phone, ShoppingBag, Settings, ArrowLeft, Heart, Camera, CheckCircle2 } from 'lucide-react';
-import HandDrawnButton from './components/HandDrawnButton';
-import HandDrawnCard from './components/HandDrawnCard';
-import HandDrawnInput from './components/HandDrawnInput';
-import { OwnerInfo, AppView } from './types';
+import HandDrawnButton from './components/HandDrawnButton.tsx';
+import HandDrawnCard from './components/HandDrawnCard.tsx';
+import HandDrawnInput from './components/HandDrawnInput.tsx';
+import { OwnerInfo, AppView } from './types.ts';
 
 const App: React.FC = () => {
   const [view, setView] = useState<AppView>('public');
   const [owner, setOwner] = useState<OwnerInfo>(() => {
-    const saved = localStorage.getItem('luggage_owner_info');
-    return saved ? JSON.parse(saved) : {
+    const defaultInfo: OwnerInfo = {
       name: 'Jhang, Yong-Ruei',
       email: 'ray319129@gmail.com',
       phone: '+886 987 654 321',
@@ -18,6 +17,19 @@ const App: React.FC = () => {
       rewardNote: 'A huge pizza and my eternal gratitude! 🍕',
       luggageId: 'LUG-2024-RY'
     };
+
+    const saved = localStorage.getItem('luggage_owner_info');
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (parsed && typeof parsed === 'object') {
+          return { ...defaultInfo, ...parsed };
+        }
+      } catch (e) {
+        console.error("Failed to parse saved owner info", e);
+      }
+    }
+    return defaultInfo;
   });
 
   const [contactForm, setContactForm] = useState({
@@ -34,7 +46,6 @@ const App: React.FC = () => {
 
   const handleSubmitContact = (e: React.FormEvent) => {
     e.preventDefault();
-    // Simulate sending email/notification
     console.log('Notifying owner:', owner.email, contactForm);
     setSubmitted(true);
     setTimeout(() => setSubmitted(false), 5000);
@@ -61,29 +72,29 @@ const App: React.FC = () => {
           <form onSubmit={handleUpdateOwner} className="space-y-4">
             <HandDrawnInput 
               label="My Name" 
-              value={owner.name}
+              value={owner.name || ''}
               onChange={e => setOwner({...owner, name: e.target.value})}
             />
             <HandDrawnInput 
               label="Email Address" 
               type="email"
-              value={owner.email}
+              value={owner.email || ''}
               onChange={e => setOwner({...owner, email: e.target.value})}
             />
             <HandDrawnInput 
               label="Phone Number" 
-              value={owner.phone}
+              value={owner.phone || ''}
               onChange={e => setOwner({...owner, phone: e.target.value})}
             />
             <HandDrawnInput 
               label="Luggage Description" 
-              value={owner.luggageDesc}
+              value={owner.luggageDesc || ''}
               onChange={e => setOwner({...owner, luggageDesc: e.target.value})}
             />
             <HandDrawnInput 
               label="Reward Message" 
               isTextArea
-              value={owner.rewardNote}
+              value={owner.rewardNote || ''}
               onChange={e => setOwner({...owner, rewardNote: e.target.value})}
             />
             <HandDrawnButton type="submit" variant="accent" className="w-full mt-4">
@@ -97,7 +108,6 @@ const App: React.FC = () => {
 
   return (
     <div className="min-h-screen py-12 px-6 max-w-5xl mx-auto relative">
-      {/* Small floating decorative elements */}
       <div className="hidden md:block absolute top-10 right-10 rotate-12 bg-white p-2 border-2 border-[#2d2d2d] wobbly-border" style={{ borderRadius: '100%' }}>
         <ShoppingBag className="text-[#ff4d4d]" size={40} />
       </div>
@@ -112,25 +122,24 @@ const App: React.FC = () => {
       </header>
 
       <div className="grid md:grid-cols-2 gap-12 items-start">
-        {/* Left: Info Column */}
         <div className="space-y-8">
           <HandDrawnCard decoration="tack" tilt={-1} className="bg-white">
             <h3 className="text-3xl mb-4 flex items-center gap-2">
               <CheckCircle2 className="text-[#2d5da1]" /> This is me!
             </h3>
             <div className="space-y-3 text-xl">
-              <p className="flex items-center gap-3">
+              <div className="flex items-center gap-3">
                 <ShoppingBag className="shrink-0" size={24} />
                 <span><strong>Bag Info:</strong> {owner.luggageDesc}</span>
-              </p>
-              <p className="flex items-center gap-3">
+              </div>
+              <div className="flex items-center gap-3">
                 <Mail className="shrink-0" size={24} />
                 <span><strong>Email:</strong> {owner.email}</span>
-              </p>
-              <p className="flex items-center gap-3">
+              </div>
+              <div className="flex items-center gap-3">
                 <Phone className="shrink-0" size={24} />
                 <span><strong>Call/Text:</strong> {owner.phone}</span>
-              </p>
+              </div>
             </div>
           </HandDrawnCard>
 
@@ -156,9 +165,7 @@ const App: React.FC = () => {
           </div>
         </div>
 
-        {/* Right: Contact Form Column */}
         <div className="relative">
-          {/* Hand drawn arrow pointing to form (hidden on mobile) */}
           <div className="hidden lg:block absolute -left-20 top-20 -rotate-45">
             <svg width="60" height="60" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M10 50C30 50 70 30 85 10M85 10L70 15M85 10L80 25" stroke="#2d2d2d" strokeWidth="4" strokeLinecap="round" />
@@ -213,7 +220,6 @@ const App: React.FC = () => {
             )}
           </HandDrawnCard>
 
-          {/* Quick Photo Hint */}
           <div className="mt-8 flex items-center justify-center gap-4 text-xl opacity-70">
             <Camera size={32} />
             <p>Scanning the ID: <span className="font-bold">{owner.luggageId}</span></p>

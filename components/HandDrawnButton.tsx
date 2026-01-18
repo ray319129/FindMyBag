@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { RADIUS, COLORS } from '../constants';
+import { RADIUS, COLORS } from '../constants.tsx';
 
 interface Props extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'primary' | 'secondary' | 'accent';

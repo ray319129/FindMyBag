@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { RADIUS } from '../constants';
+import { RADIUS } from '../constants.tsx';
 
 interface Props extends React.InputHTMLAttributes<HTMLInputElement | HTMLTextAreaElement> {
   label?: string;
